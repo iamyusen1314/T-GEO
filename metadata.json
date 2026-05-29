@@ -1,0 +1,6 @@
+{
+  "name": "T-GEO 本地 AI 搜索推荐平台",
+  "description": "针对 DeepSeek、Gemini、Kimi 和 Claude 等主流大模型的本地商户搜索引擎优化与 RAG 提示词自适应对齐控制台。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
