@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, Clock, Loader2, X, FileText, Check, AlertTriangle } from 'lucide-react';
 import { Shop } from '../types';
+import { useToast } from '../components/Toast';
 
 interface ContentFactoryProps {
   shop?: Shop;
@@ -244,6 +245,7 @@ function Metric({ title, value, total, highlight }: any) {
 }
 
 function ContentRow({ title, type, time, compliance, status }: any) {
+  const toast = useToast();
   const getStatusColor = (s: string) => {
     switch (s) {
       case '草稿': return 'text-white/40 border-white/10 bg-white/[0.01]';
@@ -273,7 +275,7 @@ function ContentRow({ title, type, time, compliance, status }: any) {
         </span>
       </td>
       <td className="px-6 py-5 text-right">
-        <button className="text-[9px] uppercase tracking-widest font-bold text-brand-gold hover:text-white transition-colors cursor-pointer underline">编辑预览</button>
+        <button onClick={() => toast.info('打开内容编辑器', title)} className="text-[9px] uppercase tracking-widest font-bold text-brand-gold hover:text-white transition-colors cursor-pointer underline">编辑预览</button>
       </td>
     </tr>
   );

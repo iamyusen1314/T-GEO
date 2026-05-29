@@ -109,19 +109,19 @@ export function Layout({ children, currentPage, setPage, shop }: LayoutProps) {
   return (
     <div className="relative min-h-screen bg-brand-bg flex font-sans text-[#D4D4D8] overflow-hidden">
       {/* 1. Underlying Neural Particle Canvas Background */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <NeuralBackground />
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <NeuralBackground variant="ambient" />
         
         {/* Dynamic backdrop shade filter overlays depending on current active workflow */}
         <div className={`absolute inset-0 bg-gradient-to-tr ${themeConfig.glow} mix-blend-color-dodge transition-all duration-1000`} />
         
         {/* Grid lines and structural noise textures overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#030304_95%)] bg-no-repeat" />
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-[3px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,#030304_100%)] bg-no-repeat" />
+        <div className="absolute inset-0 bg-black/15" />
       </div>
 
       {/* 2. Left HUD Sidebar Nav System */}
-      <aside className="relative z-10 w-64 bg-black/40 backdrop-blur-md border-r border-white/5 flex flex-col fixed inset-y-0 height-screen">
+      <aside className="relative z-10 w-64 bg-gradient-to-r from-[#0A0A0B]/85 via-[#0A0A0B]/60 to-[#0A0A0B]/25 backdrop-blur-md border-r border-white/[0.03] flex flex-col fixed inset-y-0 height-screen">
         <div className="p-8 pb-4">
           <div className="flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 256 256" className="text-brand-gold">
@@ -209,7 +209,7 @@ export function Layout({ children, currentPage, setPage, shop }: LayoutProps) {
       <div className="pl-64 flex-1 flex flex-col min-h-screen relative z-10">
         
         {/* Custom Heads Up Display (HUD) Glass Header */}
-        <header className="h-20 bg-black/25 backdrop-blur-md border-b border-white/[0.04] flex items-center px-10 justify-between sticky top-0 z-10">
+        <header className="h-20 bg-gradient-to-b from-[#0A0A0B]/70 to-[#0A0A0B]/30 backdrop-blur-md border-b border-white/[0.04] flex items-center px-10 justify-between sticky top-0 z-10">
           <div className="flex items-center gap-4">
             <div className="flex flex-col">
               <h2 className="font-serif text-lg text-white font-medium italic flex items-center gap-2.5">

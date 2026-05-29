@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Play, GitCommit, Loader2, Code2, Copy, Check } from 'lucide-react';
 import { Shop } from '../types';
+import { useToast } from '../components/Toast';
 
 interface PromptsProps {
   shop?: Shop;
@@ -11,6 +12,7 @@ export function Prompts({ shop }: PromptsProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [showResult, setShowResult] = useState(true);
   const [copied, setCopied] = useState(false);
+  const toast = useToast();
 
   const isSpa = shop?.industry === 'spa';
   const isHotel = shop?.industry === 'hotel';
@@ -98,6 +100,7 @@ export function Prompts({ shop }: PromptsProps) {
   const executeCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
+    toast.success('已复制到剪贴板', '内容已写入系统剪贴板');
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -141,7 +144,7 @@ export function Prompts({ shop }: PromptsProps) {
               <span className="px-2 py-0.5 bg-brand-gold/15 text-brand-gold border border-brand-gold/30 text-[9px] uppercase tracking-widest rounded-none font-bold">{activePrompt.version}</span>
             </div>
             <div className="flex space-x-4 items-center">
-              <button className="text-[10px] uppercase tracking-widest text-white/50 hover:text-white flex items-center gap-1.5 cursor-pointer font-semibold">
+              <button onClick={() => toast.info('版本历史', activePrompt.code + ' 当前 ' + activePrompt.version + '，可回滚至历史版本')} className="text-[10px] uppercase tracking-widest text-white/50 hover:text-white flex items-center gap-1.5 cursor-pointer font-semibold">
                 <GitCommit className="w-3.5 h-3.5" /> 版本历史
               </button>
               <div className="w-px h-3 bg-white/10"></div>

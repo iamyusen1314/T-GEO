@@ -29,6 +29,7 @@ import {
   ReferenceLine
 } from 'recharts';
 import { Shop } from '../types';
+import { useToast } from '../components/Toast';
 
 const data = [
   { name: '第1周', score: 32, industry: 40 },
@@ -48,6 +49,7 @@ export function Dashboard({ shop }: DashboardProps) {
   const [isDiagnosing, setIsDiagnosing] = useState(false);
   const [diagnosisStep, setDiagnosisStep] = useState(0);
   const [showExportModal, setShowExportModal] = useState(false);
+  const toast = useToast();
 
   const isRestaurant = shop?.industry === 'restaurant';
   const isSpa = shop?.industry === 'spa';
@@ -239,7 +241,7 @@ export function Dashboard({ shop }: DashboardProps) {
         <div className="bg-brand-card border border-brand-gold/20 p-6 flex flex-col">
           <h3 className="text-xs font-semibold uppercase tracking-widest text-brand-gold mb-4 flex items-center justify-between">
             <span>最近 7 天高价值提及拦截</span>
-            <span className="text-[10px] text-brand-gold underline cursor-pointer hover:brightness-110">
+            <span onClick={() => toast.info('正在调取历史提及档案', '近 90 天全平台高价值提及记录')} className="text-[10px] text-brand-gold underline cursor-pointer hover:brightness-110">
               View Archives
             </span>
           </h3>
@@ -369,6 +371,7 @@ function MetricCard({ title, value, trend, icon, isHighlight }: any) {
 }
 
 function InsightItem({ tag, title, desc, action, done }: any) {
+  const toast = useToast();
   return (
     <div className={cn(
       "text-xs p-4 border relative group transition-all duration-300",
@@ -383,7 +386,7 @@ function InsightItem({ tag, title, desc, action, done }: any) {
           {tag}
         </span>
         {!done && (
-          <button className="text-[9px] tracking-wider font-bold uppercase text-brand-gold hover:text-white transition-colors cursor-pointer underline flex items-center gap-1">
+          <button onClick={() => action === 'Deploy Fix' ? toast.process('正在部署优化修复', title) : toast.info('已打开待办', title)} className="text-[9px] tracking-wider font-bold uppercase text-brand-gold hover:text-white transition-colors cursor-pointer underline flex items-center gap-1">
             {action}
           </button>
         )}

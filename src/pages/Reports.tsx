@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FileText, Download, Play, Eye, ArrowLeft } from 'lucide-react';
 import { Shop } from '../types';
+import { useToast } from '../components/Toast';
 
 interface ReportsProps {
   shop?: Shop;
@@ -8,6 +9,7 @@ interface ReportsProps {
 
 export function Reports({ shop }: ReportsProps) {
   const [selectedReport, setSelectedReport] = useState<number | null>(null);
+  const toast = useToast();
 
   const isSpa = shop?.industry === 'spa';
   const isHotel = shop?.industry === 'hotel';
@@ -25,7 +27,7 @@ export function Reports({ shop }: ReportsProps) {
               <p className="text-[10px] uppercase tracking-widest text-brand-gold mt-1">Status: Finalized & Generated</p>
             </div>
           </div>
-          <button className="px-5 py-2 bg-brand-gold text-[#0A0A0B] text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 hover:brightness-110 transition-all">
+          <button onClick={() => toast.success('报告 PDF 正在导出', '30–50 页深度诊断报告即将下载完成')} className="px-5 py-2 bg-brand-gold text-[#0A0A0B] text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 hover:brightness-110 transition-all">
             <Download className="w-3 h-3" />
             Download PDF
           </button>
@@ -105,7 +107,7 @@ export function Reports({ shop }: ReportsProps) {
           <h2 className="font-serif text-3xl text-white italic">诊断报告 {shop?.name ? `- ${shop.name}` : ''}</h2>
           <p className="text-[11px] uppercase tracking-widest text-white/40 mt-2">Strategic Reports Archives</p>
         </div>
-        <button className="px-4 py-2 bg-brand-gold/10 text-brand-gold border border-brand-gold/20 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-brand-gold/20 transition-all cursor-pointer">
+        <button onClick={() => toast.process('正在重新跑测全平台诊断', '10 个大模型 × 100 意图 × 3 次并发')} className="px-4 py-2 bg-brand-gold/10 text-brand-gold border border-brand-gold/20 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-brand-gold/20 transition-all cursor-pointer">
           <Play className="w-3 h-3" />
           重新运行诊断
         </button>
@@ -130,7 +132,7 @@ export function Reports({ shop }: ReportsProps) {
                 <Eye className="w-3.5 h-3.5 text-brand-gold" />
                 在线预览
               </button>
-              <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white/5 border border-white/10 text-[9px] uppercase tracking-widest font-bold text-white/60 hover:text-white hover:bg-white/10 hover:border-white/20 transition-colors cursor-pointer">
+              <button onClick={() => toast.success('报告 PDF 正在导出', `2026年${5-i}月深度诊断报告`)} className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white/5 border border-white/10 text-[9px] uppercase tracking-widest font-bold text-white/60 hover:text-white hover:bg-white/10 hover:border-white/20 transition-colors cursor-pointer">
                 <Download className="w-3.5 h-3.5" />
                 PDF
               </button>

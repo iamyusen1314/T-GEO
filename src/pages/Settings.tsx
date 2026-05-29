@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Shop } from '../types';
 import { Settings as SettingsIcon, Users, Sliders, ShieldCheck } from 'lucide-react';
+import { useToast } from '../components/Toast';
 
 interface SettingsProps {
   shop: Shop;
@@ -10,6 +11,7 @@ interface SettingsProps {
 
 export function Settings({ shop, setShopId, shops }: SettingsProps) {
   const [activeTab, setActiveTab] = useState(0);
+  const toast = useToast();
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 max-w-5xl">
@@ -69,7 +71,7 @@ export function Settings({ shop, setShopId, shops }: SettingsProps) {
              <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                <h3 className="text-xs font-semibold uppercase tracking-widest text-white/60 mb-6 border-b border-white/[0.04] pb-4 flex justify-between items-center tracking-wider">
                  团队成员 (2)
-                 <button className="text-[10px] text-brand-gold font-bold uppercase tracking-widest hover:underline cursor-pointer">邀请成员</button>
+                 <button onClick={() => toast.success('邀请链接已生成', '可复制发送给团队成员加入工作空间')} className="text-[10px] text-brand-gold font-bold uppercase tracking-widest hover:underline cursor-pointer">邀请成员</button>
                </h3>
                <div className="space-y-4">
                  <div className="flex items-center justify-between p-4 border border-white/5 bg-white/[0.01] hover:border-brand-gold/20 transition-colors">

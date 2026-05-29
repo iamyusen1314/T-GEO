@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend, Tooltip } from 'recharts';
 import { Shop } from '../types';
-import { LayoutGrid, Percent, Activity } from 'lucide-react';
+import { LayoutGrid, Percent, Activity, RefreshCw } from 'lucide-react';
+import { useToast } from '../components/Toast';
 
 interface DataBoardProps {
   shop?: Shop;
@@ -16,18 +17,28 @@ export function DataBoard({ shop }: DataBoardProps) {
     { subject: '情感推荐度', A: 75, B: 80, fullMark: 100 },
   ];
 
+  const toast = useToast();
+  const [refreshKey, setRefreshKey] = useState(0);
+  const handleRefresh = () => { setRefreshKey(k => k + 1); toast.process('正在重新抓取平台热度', '实时拉取各大模型推荐覆盖率'); };
+
   const rivalName = shop?.industry === 'spa' ? '云水间水疗' : 
                     shop?.industry === 'hotel' ? '阿丽拉度假酒店' : 
                     '聚仙楼';
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 h-[calc(100vh-8rem)] flex flex-col">
-      <div className="flex flex-col">
-        <h2 className="font-serif text-3xl text-white italic">数据洞察看板 {shop?.name ? `- ${shop.name}` : ''}</h2>
-        <p className="text-[11px] uppercase tracking-widest text-white/40 mt-2">Deep Intelligence & Competitor Radar</p>
+      <div className="flex items-end justify-between">
+        <div className="flex flex-col">
+          <h2 className="font-serif text-3xl text-white italic">数据洞察看板 {shop?.name ? `- ${shop.name}` : ''}</h2>
+          <p className="text-[11px] uppercase tracking-widest text-white/40 mt-2">Deep Intelligence & Competitor Radar</p>
+        </div>
+        <button onClick={handleRefresh} className="px-4 py-2 bg-brand-gold/10 text-brand-gold border border-brand-gold/20 text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 hover:bg-brand-gold/20 transition-all cursor-pointer">
+          <RefreshCw className="w-3 h-3" />
+          刷新实时数据
+        </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 flex-1 min-h-0">
+      <div key={refreshKey} className="grid grid-cols-2 gap-6 flex-1 min-h-0 animate-in fade-in duration-500">
         <div className="bg-black/35 border border-white/5 p-8 flex flex-col relative">
           <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/10" />
           <div className="mb-8 flex items-center justify-between">

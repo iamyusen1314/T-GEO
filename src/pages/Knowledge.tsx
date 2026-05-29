@@ -1,6 +1,7 @@
 import React from 'react';
 import { Network, Upload, ChevronRight, Check } from 'lucide-react';
 import { Shop } from '../types';
+import { useToast } from '../components/Toast';
 
 interface KnowledgeProps {
   shop?: Shop;
@@ -9,6 +10,7 @@ interface KnowledgeProps {
 export function Knowledge({ shop }: KnowledgeProps) {
   const isSpa = shop?.industry === 'spa';
   const isHotel = shop?.industry === 'hotel';
+  const toast = useToast();
 
   const schemaName = isSpa ? 'SPA Schema' : isHotel ? 'Hotel Schema' : 'Restaurant Schema';
 
@@ -19,7 +21,7 @@ export function Knowledge({ shop }: KnowledgeProps) {
           <h2 className="font-serif text-3xl text-white italic">知识库与图谱 {shop?.name ? `- ${shop.name}` : ''}</h2>
           <p className="text-[11px] uppercase tracking-widest text-white/40 mt-2">Industry Knowledge Base & RAG</p>
         </div>
-        <button className="px-4 py-2 bg-brand-gold/10 text-brand-gold border border-brand-gold/20 text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 hover:bg-brand-gold/20 transition-all cursor-pointer">
+        <button onClick={() => toast.process('正在解析上传资料', 'AI 抽取菜单/资质/媒体报道为知识图谱节点')} className="px-4 py-2 bg-brand-gold/10 text-brand-gold border border-brand-gold/20 text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 hover:bg-brand-gold/20 transition-all cursor-pointer">
           <Upload className="w-3 h-3 text-brand-gold animate-bounce" />
           上传资料文件
         </button>
@@ -70,7 +72,7 @@ export function Knowledge({ shop }: KnowledgeProps) {
               <span className="text-xs font-semibold uppercase tracking-widest text-white">基础信息字段 ({schemaName})</span>
               <span className="text-[9px] px-1.5 py-0.5 bg-green-500/10 text-green-400 font-bold border border-green-500/20 rounded-none uppercase">Synced</span>
             </div>
-            <button className="text-[10px] text-brand-gold font-bold uppercase tracking-widest hover:text-white transition-colors cursor-pointer">EDIT SCHEMA</button>
+            <button onClick={() => toast.info('进入图谱字段编辑模式', schemaName + ' 结构可视化编辑')} className="text-[10px] text-brand-gold font-bold uppercase tracking-widest hover:text-white transition-colors cursor-pointer">EDIT SCHEMA</button>
           </div>
           <div className="flex-1 overflow-y-auto p-0">
             <table className="w-full text-left">
@@ -99,8 +101,9 @@ export function Knowledge({ shop }: KnowledgeProps) {
 }
 
 function TreeItem({ label, count, active }: any) {
+  const toast = useToast();
   return (
-    <div className={`flex items-center justify-between p-3.5 rounded-none cursor-pointer border transition-all ${
+    <div onClick={() => toast.info('已聚焦实体节点', label + ' · 完整度 ' + count)} className={`flex items-center justify-between p-3.5 rounded-none cursor-pointer border transition-all ${
       active 
         ? 'bg-brand-gold/10 border-brand-gold/30 shadow-[inset_3px_0_10px_rgba(197,160,89,0.05)]' 
         : 'hover:bg-white/[0.02] border-transparent hover:border-white/5'
