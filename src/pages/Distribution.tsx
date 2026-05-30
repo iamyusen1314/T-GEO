@@ -56,7 +56,7 @@ export function Distribution({ shop }: DistributionProps) {
   const stages: Stage[] = ['cold', 'ramp', 'maintain'];
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 h-[calc(100vh-8rem)] flex flex-col">
+    <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-serif text-3xl text-white italic">分发任务看板 {shop?.name ? `- ${shop.name}` : ''}</h2>
@@ -97,8 +97,8 @@ export function Distribution({ shop }: DistributionProps) {
             ))}
           </div>
         </div>
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-7">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-7">
             <div className="text-[9px] uppercase tracking-[0.2em] text-white/30 font-bold mb-3 flex items-center gap-2">
               <Target className="w-3 h-3 text-brand-gold/60" /> 平台分配（在哪发 · 发几篇 · 谁发）
             </div>
@@ -116,7 +116,7 @@ export function Distribution({ shop }: DistributionProps) {
               ))}
             </div>
           </div>
-          <div className="col-span-5 space-y-4 border-l border-white/5 pl-6">
+          <div className="lg:col-span-5 space-y-4 lg:border-l border-white/5 lg:pl-6">
             <div>
               <div className="text-[9px] uppercase tracking-[0.2em] text-white/30 font-bold mb-3 flex items-center gap-2">
                 <Users className="w-3 h-3 text-brand-gold/60" /> 账号矩阵（本周需要的发布主体）
@@ -145,7 +145,7 @@ export function Distribution({ shop }: DistributionProps) {
       </section>
 
       {/* ===== 看板：直接读共享流水线（内容工厂采用的内容立刻出现在这里） ===== */}
-      <div className="grid grid-cols-4 gap-6 flex-1 min-h-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         {COLUMNS.map(col => {
           const colJobs = distJobs.filter(j => j.status === col.id);
           const isHovered = hoveredCol === col.id;
@@ -154,7 +154,7 @@ export function Distribution({ shop }: DistributionProps) {
               onDragOver={(e) => { e.preventDefault(); setHoveredCol(col.id); }}
               onDragLeave={() => setHoveredCol(null)}
               onDrop={(e) => handleDrop(e, col.id)}
-              className={`bg-black/35 border transition-all duration-300 flex flex-col h-full relative ${
+              className={`bg-black/35 border transition-all duration-300 flex flex-col relative ${
                 isHovered ? 'border-brand-gold/40 shadow-[0_0_20px_rgba(197,160,89,0.03)] bg-brand-gold/[0.01]' : 'border-white/5'
               }`}>
               <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/5" />
@@ -164,7 +164,7 @@ export function Distribution({ shop }: DistributionProps) {
                 </span>
                 <span className="text-[10px] bg-brand-gold/10 border border-brand-gold/20 px-2 py-0.5 font-semibold text-brand-gold">{colJobs.length}</span>
               </div>
-              <div className="p-3 flex-1 overflow-y-auto space-y-3 bg-black/10 select-none scrollbar-thin">
+              <div className="p-3 space-y-3 bg-black/10 select-none min-h-[140px] max-h-[60vh] overflow-y-auto scrollbar-thin">
                 {colJobs.map(job => (
                   <div key={job.id} draggable
                     onDragStart={(e) => { setDraggedId(job.id); e.dataTransfer.effectAllowed = 'move'; }}

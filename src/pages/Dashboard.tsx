@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '../lib/utils';
 import { 
   ArrowUpRight, 
@@ -79,6 +79,17 @@ export function Dashboard({ shop, onNavigate }: DashboardProps) {
     { n: 5, icon: Radar,        title: '监测与优化', desc: '回填发布链接→看是否被 AI 引用→系统自学变准', cta: '看数据洞察', go: () => onNavigate?.('databoard') },
   ];
 
+  // 5 步引导态：完成一步后自动提示下一步
+  const prevStepRef = useRef(currentStep);
+  useEffect(() => {
+    if (currentStep > prevStepRef.current) {
+      const next = STEPS[currentStep - 1];
+      if (next) toast.success(`✓ 第 ${currentStep - 1} 步已完成`, `下一步 → 第 ${next.n} 步「${next.title}」：${next.desc}`);
+    }
+    prevStepRef.current = currentStep;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep]);
+
   const isRestaurant = shop?.industry === 'restaurant';
   const isSpa = shop?.industry === 'spa';
   const isHotel = shop?.industry === 'hotel';
@@ -105,6 +116,7 @@ export function Dashboard({ shop, onNavigate }: DashboardProps) {
         timer = setTimeout(() => {
           setIsDiagnosing(false);
           setDiagnosisStep(0);
+          toast.success('✓ 诊断完成', '已找出短板意图。下一步 → 第 2 步「看作战计划」：去分发看板查看本周发什么');
         }, 1500);
       }
     }
@@ -172,6 +184,11 @@ export function Dashboard({ shop, onNavigate }: DashboardProps) {
                 current ? "border-brand-gold/60 bg-brand-gold/[0.06] shadow-[0_0_15px_rgba(197,160,89,0.08)]"
                   : done ? "border-green-500/20 bg-green-500/[0.03]" : "border-white/[0.08] bg-black/20"
               )}>
+                {current && (
+                  <span className="absolute -top-2 left-3 px-2 py-0.5 bg-brand-gold text-[#0A0A0B] text-[8px] font-bold uppercase tracking-widest animate-pulse">
+                    👉 现在做这步
+                  </span>
+                )}
                 <div className="flex items-center gap-2.5 mb-2">
                   <div className={cn(
                     "w-7 h-7 flex items-center justify-center text-xs font-bold border flex-shrink-0",
