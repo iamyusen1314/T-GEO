@@ -61,11 +61,15 @@ export function NeuralBackground({ variant = 'hero' }: Props) {
     let height = (canvas.height = canvas.parentElement?.clientHeight || window.innerHeight);
 
     const coreAIs = [
-      { name: 'DeepSeek R1', glow: '#3B82F6' },
-      { name: 'Gemini 2.5 Pro', glow: '#C5A059' },
-      { name: 'Claude Sonnet', glow: '#8B5CF6' },
-      { name: 'Kimi RAG', glow: '#10B981' },
-      { name: '豆包 API', glow: '#EF4444' },
+      { name: 'DeepSeek', glow: '#3B82F6' },
+      { name: '豆包', glow: '#EF4444' },
+      { name: 'Kimi', glow: '#10B981' },
+      { name: '腾讯元宝', glow: '#22D3EE' },
+      { name: '通义千问', glow: '#A855F7' },
+      { name: '文心一言', glow: '#2563EB' },
+      { name: 'ChatGPT', glow: '#10A37F' },
+      { name: 'Gemini', glow: '#C5A059' },
+      { name: 'Claude', glow: '#8B5CF6' },
     ];
     const dataNodes = [
       '粤菜·长禧家珑厨', '泰隐颂钵SPA', '安岚度假酒店',

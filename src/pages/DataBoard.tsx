@@ -26,7 +26,7 @@ export function DataBoard({ shop }: DataBoardProps) {
                     '聚仙楼';
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 h-[calc(100vh-8rem)] flex flex-col">
+    <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex items-end justify-between">
         <div className="flex flex-col">
           <h2 className="font-serif text-3xl text-white italic">数据洞察看板 {shop?.name ? `- ${shop.name}` : ''}</h2>
@@ -38,28 +38,38 @@ export function DataBoard({ shop }: DataBoardProps) {
         </button>
       </div>
 
-      <div key={refreshKey} className="grid grid-cols-2 gap-6 flex-1 min-h-0 animate-in fade-in duration-500">
+      <div key={refreshKey} className="grid grid-cols-1 xl:grid-cols-2 gap-6 animate-in fade-in duration-500">
         <div className="bg-black/35 border border-white/5 p-8 flex flex-col relative">
           <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/10" />
           <div className="mb-8 flex items-center justify-between">
             <div>
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white flex items-center gap-2">
                 <Percent className="w-3.5 h-3.5 text-brand-gold animate-pulse" />
-                主流 AI 平台推荐推荐率 (Coverage)
+                全渠道 AI 平台推荐覆盖率 (Coverage)
               </h3>
-              <p className="text-[10px] text-white/40 mt-1">实时各大主流大语言模型推荐热度抓取</p>
+              <p className="text-[10px] text-white/40 mt-1">实时抓取国内+海外+入口型 AI 搜索的推荐热度（共 18 个渠道）</p>
             </div>
             <span className="text-[9px] font-mono font-bold tracking-widest text-brand-gold bg-brand-gold/10 px-2.5 py-0.5 border border-brand-gold/20 uppercase">Core Engines</span>
           </div>
-          <div className="flex-1 grid grid-cols-2 gap-x-6 gap-y-4 content-start">
-            <PlatformRow name="DeepSeek" coverage="High" perf="95%" />
-            <PlatformRow name="豆包 (Doubao)" coverage="Medium" perf="72%" />
-            <PlatformRow name="Kimi" coverage="High" perf="88%" />
-            <PlatformRow name="微信元宝" coverage="Low" perf="45%" warn />
-            <PlatformRow name="文心一言" coverage="Medium" perf="68%" />
-            <PlatformRow name="ChatGPT" coverage="High" perf="90%" />
-            <PlatformRow name="Gemini" coverage="High" perf="85%" />
-            <PlatformRow name="通义千问" coverage="Medium" perf="70%" />
+          <div className="flex-1 grid grid-cols-2 gap-x-6 gap-y-3 content-start overflow-y-auto scrollbar-thin pr-1">
+            <PlatformRow name="DeepSeek" perf="95%" />
+            <PlatformRow name="豆包" perf="91%" />
+            <PlatformRow name="Kimi" perf="88%" />
+            <PlatformRow name="腾讯元宝" perf="45%" warn />
+            <PlatformRow name="通义千问" perf="73%" />
+            <PlatformRow name="文心一言" perf="68%" />
+            <PlatformRow name="智谱清言" perf="64%" />
+            <PlatformRow name="讯飞星火" perf="52%" warn />
+            <PlatformRow name="腾讯混元" perf="61%" />
+            <PlatformRow name="ChatGPT" perf="90%" />
+            <PlatformRow name="Gemini" perf="85%" />
+            <PlatformRow name="Claude" perf="83%" />
+            <PlatformRow name="Perplexity" perf="79%" />
+            <PlatformRow name="百度 AI 搜" perf="58%" warn />
+            <PlatformRow name="夸克 AI" perf="55%" warn />
+            <PlatformRow name="抖音 AI 搜" perf="49%" warn />
+            <PlatformRow name="小红书 AI 搜" perf="62%" />
+            <PlatformRow name="微信 AI 搜" perf="47%" warn />
           </div>
         </div>
 

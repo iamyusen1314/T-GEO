@@ -106,7 +106,7 @@ export function FeatureDetailModal({ initialTab, onClose }: FeatureDetailModalPr
                   <span className="text-xs text-brand-gold uppercase tracking-[0.2em] font-bold block mb-2">架构原理 // ARCHITECTURAL BASE</span>
                   <h4 className="font-serif text-2xl text-white italic font-semibold tracking-wide">多平台 AI 搜索引擎联动控制引擎</h4>
                   <p className="mt-3">
-                    大语言模型如 <strong>DeepSeek</strong>、<strong>Gemini</strong>、<strong>Claude</strong> 和 <strong>Kimi</strong> 的推荐触发路径本质上是一个多层语义检索过滤网络。<strong>T-GEO™ 联动控制引擎</strong> 解决了商户在各 AI 搜索引擎中由于信息孤岛和表示偏差面临的“不提及”、“被选择性滤除”甚至是“被同类竞品卡位拦截”等底层痛点。
+                    大语言模型如 <strong>DeepSeek</strong>、<strong>豆包</strong>、<strong>通义千问</strong>、<strong>元宝</strong>、<strong>ChatGPT</strong> 等全渠道的推荐触发路径本质上是一个多层语义检索过滤网络。<strong>T-GEO™ 联动控制引擎</strong> 解决了商户在各 AI 搜索引擎中由于信息孤岛和表示偏差面临的“不提及”、“被选择性滤除”甚至是“被同类竞品卡位拦截”等底层痛点。
                   </p>
                 </div>
 
@@ -130,7 +130,7 @@ export function FeatureDetailModal({ initialTab, onClose }: FeatureDetailModalPr
                     </li>
                     <li className="flex items-start gap-2 text-white/80">
                       <CheckCircle2 className="w-4 h-4 text-brand-gold flex-shrink-0 mt-0.5" />
-                      <div><strong>全平台分布式对齐</strong>：避免单一模型的过拟合偏好。通过自适应权重分发，不仅覆盖 DeepSeek，还可以无缝对齐 Kimi、豆包、Gemini 推荐。</div>
+                      <div><strong>全平台分布式对齐</strong>：避免单一模型的过拟合偏好。通过自适应权重分发，全渠道无缝对齐 DeepSeek、豆包、Kimi、元宝、通义千问、文心一言、智谱清言、ChatGPT、Gemini、Claude 等推荐。</div>
                     </li>
                     <li className="flex items-start gap-2 text-white/80">
                       <CheckCircle2 className="w-4 h-4 text-brand-gold flex-shrink-0 mt-0.5" />

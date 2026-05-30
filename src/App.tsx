@@ -22,12 +22,12 @@ import {
   Sparkles, 
   Fingerprint, 
   Lock, 
-  ArrowRight, 
-  CornerDownRight, 
+  ArrowRight,
   Wifi,
   Laptop
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { AGENTS } from './lib/agents';
 
 export const MOCK_SHOPS: Shop[] = [
   { id: 'shop_01', name: '长禧家珑厨（万博广晟店）', industry: 'restaurant' },
@@ -76,7 +76,7 @@ export default function App() {
       "建立临时内存空间，安全加密缓存会话密钥...",
       "正在读取全局决策智能体工作空间代理策略...",
       `正在注入目标行业图谱架构: [${activeShop.industry.toUpperCase()}_图谱数据架构]`,
-      `正在对齐多大模型核心接口 API (DeepSeek, Claude, Gemini, Kimi)...`,
+      `正在对齐全渠道大模型核心接口 (DeepSeek, 豆包, Kimi, 元宝, 通义千问, 文心一言, 智谱清言, ChatGPT, Gemini, Claude)...`,
       `成功载入本地商户专有知识库与提及源头: ${activeShop.name}`,
       "正在计算并预警本地 AI 检索提及率 (T-LBR) 合规阈值...",
       "正在重构最优化 Prompt 合规温度限制参数...",
@@ -131,7 +131,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'dashboard':
-        return <Dashboard shop={activeShop} />;
+        return <Dashboard shop={activeShop} onNavigate={setCurrentPage} />;
       case 'reports':
         return <Reports shop={activeShop} />;
       case 'knowledge':
@@ -232,7 +232,7 @@ export default function App() {
             </h1>
 
             <p className="text-white/60 text-sm leading-[1.8] max-w-lg">
-              当高净值客户检索好去处时，你的门店在线吗？<strong className="text-white font-semibold">T-GEO™ 决策矩阵</strong> 专注于将门店独特的招牌菜单、技师资质、游玩背书无缝对齐并嵌入大语言模型推荐管道，让您在 <strong className="text-brand-gold font-medium">DeepSeek、Kimi、豆包、ChatGC、及 Gemini</strong> 搜索推荐中稳夺首屏霸位。
+              当高净值客户检索好去处时，你的门店在线吗？<strong className="text-white font-semibold">T-GEO™ 决策矩阵</strong> 专注于将门店独特的招牌菜单、技师资质、游玩背书无缝对齐并嵌入大语言模型推荐管道，让您在 <strong className="text-brand-gold font-medium">DeepSeek、豆包、Kimi、元宝、通义千问、文心一言、智谱清言、ChatGPT、Gemini</strong> 等全渠道 AI 搜索推荐中稳夺首屏霸位。
             </p>
 
             <div className="pt-4 grid grid-cols-2 gap-4 max-w-md">
@@ -248,17 +248,29 @@ export default function App() {
               </div>
             </div>
 
-            {/* Micro bullet logs style list */}
-            <div className="space-y-2.5 text-[11px] leading-relaxed">
-              <div className="text-[10px] uppercase font-bold text-white/30 tracking-widest">T-GEO 核心融合能力：</div>
-              <div className="flex items-center gap-3 text-white/50 hover:text-white/80 transition-colors">
-                <CornerDownRight className="w-3.5 h-3.5 text-brand-gold flex-shrink-0" />
-                <span>基于高维向量的本地商户高精度实体知识图谱配置 (Knowledge Graph)</span>
+            {/* ===== 核心卖点：自我进化的 AI Agent 闭环（越用越准） ===== */}
+            <div className="space-y-3 border border-brand-gold/15 bg-brand-gold/[0.02] p-4 relative overflow-hidden">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-gold/40 to-transparent animate-shimmer" />
+              <div className="text-[10px] uppercase font-bold text-brand-gold tracking-widest flex items-center gap-2">
+                <Sparkles className="w-3 h-3" /> 自我进化的 AI Agent 闭环 · 越用越准
               </div>
-              <div className="flex items-center gap-3 text-white/50 hover:text-white/80 transition-colors">
-                <CornerDownRight className="w-3.5 h-3.5 text-brand-gold flex-shrink-0" />
-                <span>依据搜索引擎及大模型 EEAT 专业权威度审计的自动内容分发方案</span>
+              <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2">
+                {AGENTS.map((a, i) => (
+                  <React.Fragment key={a.id}>
+                    <span className={`text-[9.5px] tracking-wide px-2 py-1 border font-semibold ${
+                      a.feedsBack ? 'border-brand-gold/50 bg-brand-gold/10 text-brand-gold' : 'border-white/10 bg-white/[0.02] text-white/55'
+                    }`}>
+                      {a.name.replace(' Agent', '')}
+                    </span>
+                    {i < AGENTS.length - 1 && <ArrowRight className="w-3 h-3 text-white/25 flex-shrink-0" />}
+                  </React.Fragment>
+                ))}
+                <span className="text-[9.5px] text-brand-gold ml-1 font-semibold">↺ 回喂</span>
               </div>
+              <p className="text-[11px] text-white/55 leading-relaxed">
+                诊断短板 → 自动排期分发 → 按"已被 AI 引用的最优打法"生成内容 → 监测哪些真被各大模型引用 → 学习并回喂下一轮。
+                <strong className="text-white/80"> 每一次运营，系统都更懂如何让你被 AI 优先推荐。</strong>
+              </p>
             </div>
           </motion.div>
 
@@ -416,7 +428,7 @@ export default function App() {
             <span className="hidden md:inline text-white/20">|</span>
             <span>已成功监测并优化商户被提及词组数: 1,428,091 组</span>
             <span className="hidden md:inline text-white/20">|</span>
-            <span>当前核心对齐大模型：DeepSeek / Kimi / Gemini / Claude</span>
+            <span>全渠道对齐：DeepSeek / 豆包 / Kimi / 元宝 / 通义千问 / 文心一言 / 智谱清言 / ChatGPT / Gemini / Claude</span>
           </div>
           <div className="flex items-center gap-4 text-xs font-mono font-medium">
             <span className="text-[10px] text-brand-gold uppercase tracking-[0.15em] font-semibold">T-GEO V4.2.1-SECURE</span>

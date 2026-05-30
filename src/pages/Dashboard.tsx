@@ -16,7 +16,13 @@ import {
   CheckCircle2,
   Loader2,
   Download,
-  X
+  X,
+  Wand2,
+  Send,
+  Radar,
+  Brain,
+  CalendarRange,
+  ArrowRight
 } from 'lucide-react';
 import { 
   LineChart, 
@@ -28,8 +34,11 @@ import {
   ResponsiveContainer,
   ReferenceLine
 } from 'recharts';
-import { Shop } from '../types';
+import { Shop, PageType } from '../types';
 import { useToast } from '../components/Toast';
+import { usePipeline } from '../store/PipelineContext';
+import { AGENTS } from '../lib/agents';
+import type { Industry } from '../lib/distribution';
 
 const data = [
   { name: '第1周', score: 32, industry: 40 },
@@ -43,13 +52,32 @@ const data = [
 
 interface DashboardProps {
   shop?: Shop;
+  onNavigate?: (page: PageType) => void;
 }
 
-export function Dashboard({ shop }: DashboardProps) {
+export function Dashboard({ shop, onNavigate }: DashboardProps) {
   const [isDiagnosing, setIsDiagnosing] = useState(false);
   const [diagnosisStep, setDiagnosisStep] = useState(0);
   const [showExportModal, setShowExportModal] = useState(false);
   const toast = useToast();
+  const { learningFor, jobsFor } = usePipeline();
+  const industry = (shop?.industry ?? 'restaurant') as Industry;
+  const learning = learningFor(industry);
+  const jobs = jobsFor(industry);
+
+  // 根据流水线进度，判断用户当前走到第几步（让"下一步做什么"高亮）
+  const hasDraft = jobs.some(j => j.status === 'draft' || j.status === 'ready');
+  const hasDist = jobs.some(j => ['backlog', 'review', 'executing'].includes(j.status));
+  const hasPublished = jobs.some(j => j.status === 'published');
+  const currentStep = hasPublished ? 5 : hasDist ? 4 : hasDraft ? 3 : 2; // 1诊断默认已完成
+
+  const STEPS = [
+    { n: 1, icon: Search,       title: '诊断现状', desc: '全渠道跑测，找出你没被 AI 推荐的短板意图', cta: '运行诊断', go: () => handleStartDiagnosis() },
+    { n: 2, icon: CalendarRange,title: '看作战计划', desc: '系统按短板排好：本周发几篇、在哪发、谁发', cta: '去分发看板', go: () => onNavigate?.('distribution') },
+    { n: 3, icon: Wand2,        title: '一键生成内容', desc: '内容工厂按计划+最优打法生成 AI 可读内容', cta: '去内容工厂', go: () => onNavigate?.('content') },
+    { n: 4, icon: Send,         title: '采用并分发', desc: '采用内容→自动进看板→客户/达人发布', cta: '去分发看板', go: () => onNavigate?.('distribution') },
+    { n: 5, icon: Radar,        title: '监测与优化', desc: '回填发布链接→看是否被 AI 引用→系统自学变准', cta: '看数据洞察', go: () => onNavigate?.('databoard') },
+  ];
 
   const isRestaurant = shop?.industry === 'restaurant';
   const isSpa = shop?.industry === 'spa';
@@ -60,7 +88,7 @@ export function Dashboard({ shop }: DashboardProps) {
 
   const DIAGNOSIS_STEPS = [
     "正在初始化 T-GEO 扫描引擎...",
-    "正在连接大模型接口 (DeepSeek, Kimi, 豆包)...",
+    "正在连接全渠道大模型接口 (DeepSeek, 豆包, Kimi, 元宝, 通义千问, 文心一言, ChatGPT...)...",
     `正在针对核心产品 [${productTarget}] 进行语义穷举...`,
     "正在抓取各平台搜索首屏返回结果...",
     `正在比对竞品 [${competitor}] 的内容渗透率...`,
@@ -110,6 +138,116 @@ export function Dashboard({ shop }: DashboardProps) {
             {isDiagnosing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
             {isDiagnosing ? '诊断中...' : '一键智能诊断'}
           </button>
+        </div>
+      </section>
+
+      {/* ===== AI Agent 运作中枢（工作台 = 多 Agent 自我进化闭环） ===== */}
+      <section className="bg-brand-card border border-brand-gold/20 p-6 relative overflow-hidden shadow-[0_0_15px_rgba(197,160,89,0.03)]">
+        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-brand-gold/40" />
+        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand-gold/40 to-transparent animate-shimmer" />
+
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+          <div className="flex items-center gap-2.5">
+            <Brain className="w-4 h-4 text-brand-gold animate-pulse" />
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-white">运营行动路径 · 跟着 5 步做就行</h3>
+              <p className="text-[10px] text-white/40 mt-1">不用懂技术，照这 5 步走 → 系统自动帮你被 AI 优先推荐，越用越准</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 border border-brand-gold/20 bg-brand-gold/[0.04] px-3 py-1.5 flex-shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-[9px] uppercase tracking-widest text-green-500 font-bold">AI 自动运作中</span>
+          </div>
+        </div>
+
+        {/* 5 步行动路径：清晰告诉用户"下一步做什么"，当前步高亮 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-3">
+          {STEPS.map((s, i) => {
+            const done = s.n < currentStep;
+            const current = s.n === currentStep;
+            const Icon = s.icon;
+            return (
+              <div key={s.n} className={cn(
+                "relative p-4 border flex flex-col transition-all",
+                current ? "border-brand-gold/60 bg-brand-gold/[0.06] shadow-[0_0_15px_rgba(197,160,89,0.08)]"
+                  : done ? "border-green-500/20 bg-green-500/[0.03]" : "border-white/[0.08] bg-black/20"
+              )}>
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className={cn(
+                    "w-7 h-7 flex items-center justify-center text-xs font-bold border flex-shrink-0",
+                    current ? "border-brand-gold bg-brand-gold text-[#0A0A0B]"
+                      : done ? "border-green-500/40 text-green-400" : "border-white/15 text-white/40"
+                  )}>
+                    {done ? <CheckCircle2 className="w-4 h-4" /> : s.n}
+                  </div>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <Icon className={cn("w-3.5 h-3.5 flex-shrink-0", current ? "text-brand-gold" : "text-white/40")} />
+                    <span className={cn("text-xs font-bold truncate", current ? "text-white" : "text-white/70")}>{s.title}</span>
+                  </div>
+                </div>
+                <p className="text-[10px] text-white/40 leading-relaxed flex-1 mb-3">{s.desc}</p>
+                <button onClick={s.go} className={cn(
+                  "text-[10px] font-bold uppercase tracking-widest py-2 flex items-center justify-center gap-1.5 transition-all cursor-pointer border",
+                  current ? "bg-brand-gold text-[#0A0A0B] border-brand-gold hover:brightness-110"
+                    : "bg-white/[0.02] text-white/60 border-white/10 hover:text-white hover:border-white/25"
+                )}>
+                  {done ? '已完成 · 重做' : s.cta} <ArrowRight className="w-3 h-3" />
+                </button>
+                {i < STEPS.length - 1 && (
+                  <ArrowRight className="hidden xl:block absolute top-1/2 -right-2.5 -translate-y-1/2 w-3 h-3 text-white/15 z-10" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 背后 7 个 Agent 自动驱动（降级为说明，不抢主视觉） */}
+        <p className="text-[9px] text-white/30 mt-4 flex items-start gap-1.5 leading-relaxed">
+          <Sparkles className="w-3 h-3 text-brand-gold/50 flex-shrink-0 mt-0.5" />
+          <span>以上每步均由 AI Agent 自动执行：{AGENTS.map(a => a.name.replace(' Agent', '')).join(' · ')} —— 系统监测"被 AI 引用"结果后自动学习、回喂下一轮，<strong className="text-white/50">越用越准</strong>。</span>
+        </p>
+
+        {/* 学习面板：越用越聪明的量化 */}
+        <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-4 pt-5 border-t border-white/5">
+          <div className="lg:col-span-1">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] uppercase tracking-widest text-white/40 font-semibold flex items-center gap-1.5">
+                <Brain className="w-3 h-3 text-brand-gold/60" /> 系统智能增益
+              </span>
+              <span className="font-serif text-2xl text-brand-gold">{learning.intelligenceGain}%</span>
+            </div>
+            <div className="h-1.5 bg-white/5 overflow-hidden">
+              <div className="h-full bg-brand-gold transition-all duration-700" style={{ width: `${learning.intelligenceGain}%` }} />
+            </div>
+            <p className="text-[9px] text-white/30 mt-2 leading-relaxed">
+              已从 <span className="text-brand-gold font-bold">{learning.citedCount}</span> 次"被 AI 引用"回填中学习（命中率 {Math.round(learning.citeRate * 100)}%）。越多内容被引用，系统越精准。
+            </p>
+          </div>
+
+          <div className="lg:col-span-1 border-l border-white/5 lg:pl-4">
+            <div className="text-[10px] uppercase tracking-widest text-white/40 font-semibold mb-2.5 flex items-center gap-1.5">
+              <TrendingUp className="w-3 h-3 text-brand-gold/60" /> 当前已验证最优打法
+            </div>
+            {learning.bestPlay ? (
+              <div className="space-y-1.5">
+                <div className="text-xs text-white font-semibold">{learning.bestPlay.platform} · {learning.bestPlay.contentType}</div>
+                <div className="text-[10px] text-green-400 font-mono">命中率 {Math.round(learning.bestPlay.rate * 100)}% → 已回喂内容 Agent 优先采用</div>
+              </div>
+            ) : (
+              <div className="text-[10px] text-white/30">尚在积累被引用样本，回填越多越快学出最优打法。</div>
+            )}
+          </div>
+
+          <div className="lg:col-span-1 border-l border-white/5 lg:pl-4">
+            <div className="text-[10px] uppercase tracking-widest text-white/40 font-semibold mb-2.5 flex items-center gap-1.5">
+              <Search className="w-3 h-3 text-brand-gold/60" /> 下一轮优先补的短板意图
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {learning.weakIntents.length ? learning.weakIntents.map((w, i) => (
+                <span key={i} className="text-[9px] px-2 py-0.5 border border-white/10 bg-white/[0.02] text-white/55 truncate max-w-[140px]">{w}</span>
+              )) : <span className="text-[10px] text-white/30">核心意图已基本覆盖</span>}
+            </div>
+          </div>
         </div>
       </section>
 
